@@ -1,0 +1,216 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# BIGTREETECH ADXL345 V2.0 Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+# 
+# Firmware compilation settings:
+# [*] Enable extra low-level configuration options  
+# Micro-controller Architecture (Raspberry Pi RP2040/RP235x)  ---> 
+# Processor model (rp2040)  ---> 
+# Bootloader offset (No bootloader)  ---> 
+# Flash chip (GENERIC_03H with CLKDIV 4)  ---> 
+# Communication Interface (USBSERIAL)  --->
+# 
+# ═══════════════════════════════════════════════════════════════════════════
+# Flashing Instructions:
+# ═══════════════════════════════════════════════════════════════════════════
+# 
+# Initial flash via DFU:
+# 1. Hold Boot button and connect board via USB-C to enter DFU mode
+# 2. Query DFU device ID:
+#    lsusb
+# 3. Navigate to Klipper directory and flash:
+#    cd ~/klipper
+#    make flash FLASH_DEVICE=2e8a:0003
+#    (Replace 2e8a:0003 with actual device ID)
+# 4. Query serial ID after flashing:
+#    ls /dev/serial/by-id/
+# 
+# Subsequent updates (USB mode):
+# make flash FLASH_DEVICE=/dev/serial/by-id/usb-Klipper_rp2040_XXXXX-if00
+# (No need to press Boot button for USB updates)
+# 
+# ═══════════════════════════════════════════════════════════════════════════
+
+[mcu adxl345]
+serial: /dev/serial/by-id/usb-Klipper_rp2040_5044466778367D1C-if00
+restart_method: command
+
+[temperature_sensor adxl345_mcu]
+sensor_type: temperature_mcu
+sensor_mcu: adxl345
+min_temp: 0
+max_temp: 100
+
+[adxl345]
+cs_pin: adxl345:gpio9
+spi_software_sclk_pin: adxl345:gpio10
+spi_software_mosi_pin: adxl345:gpio11
+spi_software_miso_pin: adxl345:gpio8
+axes_map: -x,-y,-z
+# rate: 3200  # Optional: sampling rate (default 3200)
+
+[resonance_tester]
+probe_points: 100, 100, 20  # Center of 200x200 bed, 20mm height
+accel_chip: adxl345
+# min_freq: 5  # Optional: minimum frequency to test (default 5 Hz)
+# max_freq: 133.33  # Optional: maximum frequency to test (default 133.33 Hz)
+# accel_per_hz: 75  # Optional: acceleration per Hz (default 75)
+# hz_per_sec: 1  # Optional: frequency sweep rate (default 1 Hz/s)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Input Shaping Calibration Macros
+# ═══════════════════════════════════════════════════════════════════════════
+
+[gcode_macro SHAPER_CALIBRATE_X]
+description: "Calibrate input shaper for X axis. Requires heated bed and extruder."
+gcode:
+  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("  INPUT SHAPER CALIBRATION - X AXIS")}
+  {action_respond_info("═══════════════════════════════════════════")}
+
+  # Check if ADXL345 is connected
+  {% if 'adxl345' not in printer %}
+    {action_respond_info("ERROR: ADXL345 accelerometer not found!")}
+    {action_respond_info("Check USB connection and restart Klipper")}
+    {action_raise_error("ADXL345 not connected")}
+  {% endif %}
+
+  # Check temperatures
+  {% set extruder_temp = printer.extruder.temperature %}
+  {% set bed_temp = printer.heater_bed.temperature %}
+
+  {% if extruder_temp < 150 %}
+    {action_respond_info("WARNING: Extruder temperature is %.1f°C" % extruder_temp)}
+    {action_respond_info("Recommended: Heat to printing temperature (200-220°C)")}
+    {action_respond_info("Cold calibration may give inaccurate results")}
+  {% endif %}
+
+  {% if bed_temp < 40 %}
+    {action_respond_info("WARNING: Bed temperature is %.1f°C" % bed_temp)}
+    {action_respond_info("Recommended: Heat to printing temperature (60°C)")}
+  {% endif %}
+
+  # Home if not already homed
+  {% if "xyz" not in printer.toolhead.homed_axes %}
+    {action_respond_info("Homing all axes...")}
+    G28
+  {% else %}
+    {action_respond_info("Printer already homed")}
+  {% endif %}
+
+  # Move to safe position
+  {action_respond_info("Moving to calibration position...")}
+  G90
+  G1 Z20 F600
+
+  # Start calibration
+  {action_respond_info("Starting X axis calibration...")}
+  {action_respond_info("This will take approximately 1-2 minutes")}
+  {action_respond_info("The toolhead will vibrate - this is normal")}
+  {action_respond_info("═══════════════════════════════════════════")}
+
+  SHAPER_CALIBRATE AXIS=X
+
+  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("X axis calibration complete!")}
+  {action_respond_info("Check console for recommended shaper settings")}
+  {action_respond_info("Run SAVE_CONFIG to apply settings")}
+  {action_respond_info("═══════════════════════════════════════════")}
+
+
+[gcode_macro SHAPER_CALIBRATE_Y]
+description: "Calibrate input shaper for Y axis. Requires heated bed and extruder."
+gcode:
+  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("  INPUT SHAPER CALIBRATION - Y AXIS")}
+  {action_respond_info("═══════════════════════════════════════════")}
+
+  # Check if ADXL345 is connected
+  {% if 'adxl345' not in printer %}
+    {action_respond_info("ERROR: ADXL345 accelerometer not found!")}
+    {action_respond_info("Check USB connection and restart Klipper")}
+    {action_raise_error("ADXL345 not connected")}
+  {% endif %}
+
+  # Check temperatures
+  {% set extruder_temp = printer.extruder.temperature %}
+  {% set bed_temp = printer.heater_bed.temperature %}
+
+  {% if extruder_temp < 150 %}
+    {action_respond_info("WARNING: Extruder temperature is %.1f°C" % extruder_temp)}
+    {action_respond_info("Recommended: Heat to printing temperature (200-220°C)")}
+    {action_respond_info("Cold calibration may give inaccurate results")}
+  {% endif %}
+
+  {% if bed_temp < 40 %}
+    {action_respond_info("WARNING: Bed temperature is %.1f°C" % bed_temp)}
+    {action_respond_info("Recommended: Heat to printing temperature (60°C)")}
+  {% endif %}
+
+  # Home if not already homed
+  {% if "xyz" not in printer.toolhead.homed_axes %}
+    {action_respond_info("Homing all axes...")}
+    G28
+  {% else %}
+    {action_respond_info("Printer already homed")}
+  {% endif %}
+
+  # Move to safe position
+  {action_respond_info("Moving to calibration position...")}
+  G90
+  G1 Z20 F600
+
+  # Start calibration
+  {action_respond_info("Starting Y axis calibration...")}
+  {action_respond_info("This will take approximately 1-2 minutes")}
+  {action_respond_info("The toolhead will vibrate - this is normal")}
+  {action_respond_info("═══════════════════════════════════════════")}
+
+  SHAPER_CALIBRATE AXIS=Y
+
+  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("Y axis calibration complete!")}
+  {action_respond_info("Check console for recommended shaper settings")}
+  {action_respond_info("Run SAVE_CONFIG to apply settings")}
+  {action_respond_info("═══════════════════════════════════════════")}
+
+
+[gcode_macro SHAPER_CALIBRATE_ALL]
+description: "Calibrate input shaper for both X and Y axes"
+gcode:
+  {action_respond_info("╔═══════════════════════════════════════════╗")}
+  {action_respond_info("║  COMPLETE INPUT SHAPER CALIBRATION       ║")}
+  {action_respond_info("╚═══════════════════════════════════════════╝")}
+  {action_respond_info("")}
+  {action_respond_info("This will calibrate both X and Y axes")}
+  {action_respond_info("Total time: approximately 3-4 minutes")}
+  {action_respond_info("")}
+
+  # Check if ADXL345 is connected
+  {% if 'adxl345' not in printer %}
+    {action_respond_info("ERROR: ADXL345 accelerometer not found!")}
+    {action_raise_error("ADXL345 not connected")}
+  {% endif %}
+
+  # Check temperatures
+  {% set extruder_temp = printer.extruder.temperature %}
+  {% set bed_temp = printer.heater_bed.temperature %}
+
+  {action_respond_info("Current temperatures:")}
+  {action_respond_info("  Extruder: %.1f°C" % extruder_temp)}
+  {action_respond_info("  Bed: %.1f°C" % bed_temp)}
+  {action_respond_info("")}
+
+  # Run X calibration first
+  {action_respond_info("Starting X axis calibration...")}
+  SHAPER_CALIBRATE_X
+
+  # Run Y calibration
+  {action_respond_info("Starting Y axis calibration...")}
+  SHAPER_CALIBRATE_Y
+
+  {action_respond_info("╔═══════════════════════════════════════════╗")}
+  {action_respond_info("║  ALL CALIBRATIONS COMPLETE               ║")}
+  {action_respond_info("╚═══════════════════════════════════════════╝")}
+  {action_respond_info("Run SAVE_CONFIG to apply all settings")}

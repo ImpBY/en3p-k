@@ -1,0 +1,296 @@
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Display Connector Configuration for Elegoo Neptune 3 Pro
+# ═══════════════════════════════════════════════════════════════════════════
+
+[general]
+# Filename cleaning regex (removes timestamps from display)
+clean_filename_regex = .*_(.*?_(?:[0-9]+h|[0-9]+m|[0-9]+s)+\.gcode)
+
+# Serial port for display communication
+serial_port = /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_ABBJs142T16-if00-port0
+
+# Display type and printer model
+display_type = elegoo
+printer_model = N4
+
+# Connection settings
+baud_rate = 115200
+timeout = 5
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Logging Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+[LOGGING]
+# Log levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+file_log_level = ERROR
+console_log_level = INFO
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# File Management
+# ═══════════════════════════════════════════════════════════════════════════
+
+[files]
+# Sort files by modification date (newest first)
+sort_by = modified
+sort_order = desc
+sort_folders_first = true
+
+# File filtering
+show_hidden_files = false
+show_system_files = false
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Main Screen Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+[main_screen]
+# Display printer model name
+display_name = Neptune 3 Pro
+# Line color (RGB hex: 1725 = dark blue)
+display_name_line_color = 1725
+
+# Status update interval (seconds)
+update_interval = 1
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Print Screen Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+[print_screen]
+# Z height display unit
+z_display = mm
+
+# Progress display options
+show_layer_progress = true
+show_time_remaining = true
+show_percentage = true
+
+# Update frequency during print (seconds)
+update_interval = 2
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Thumbnail Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+[thumbnails]
+# Background color for thumbnails (RGB hex)
+background_color = 29354a
+
+# Thumbnail size preferences
+preferred_size = 300x300
+fallback_size = 200x200
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Material Temperature Presets
+# ═══════════════════════════════════════════════════════════════════════════
+
+[temperatures.pla]
+extruder = 215
+heater_bed = 60
+description = "Standard PLA"
+
+[temperatures.pla_plus]
+extruder = 220
+heater_bed = 65
+description = "PLA+ / PLA Pro"
+
+[temperatures.petg]
+extruder = 235
+heater_bed = 80
+description = "Standard PETG"
+
+[temperatures.petg_plus]
+extruder = 240
+heater_bed = 85
+description = "PETG+ / High-temp PETG"
+
+[temperatures.abs]
+extruder = 250
+heater_bed = 100
+description = "Standard ABS (requires enclosure)"
+
+[temperatures.asa]
+extruder = 255
+heater_bed = 105
+description = "ASA (requires enclosure)"
+
+[temperatures.tpu]
+extruder = 220
+heater_bed = 50
+description = "Flexible TPU (95A)"
+
+[temperatures.tpu_soft]
+extruder = 210
+heater_bed = 45
+description = "Soft TPU (85A)"
+
+[temperatures.nylon]
+extruder = 260
+heater_bed = 80
+description = "Nylon (requires dry filament)"
+
+[temperatures.pc]
+extruder = 270
+heater_bed = 110
+description = "Polycarbonate (requires enclosure)"
+
+[temperatures.wood]
+extruder = 200
+heater_bed = 55
+description = "Wood-filled PLA"
+
+[temperatures.silk]
+extruder = 210
+heater_bed = 60
+description = "Silk PLA"
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Prepare Menu Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+[prepare]
+# Movement distances (mm)
+move_distance = 1
+move_distance_options = 0.1, 1, 10, 50
+
+# Movement speeds (mm/s)
+xy_move_speed = 200  # Increased for Neptune 3 Pro capabilities
+z_move_speed = 15    # Increased for faster Z movement
+
+# Extrusion settings
+extrude_amount = 10
+extrude_amount_options = 1, 5, 10, 50
+extrude_speed = 5
+retract_speed = 25
+
+# Homing options
+home_all_on_startup = false
+safe_z_home = true
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Leveling Screen Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+[leveling_screen]
+# Auto-leveling options
+show_mesh_visualization = true
+mesh_min_color = 0000FF  # Blue (low points)
+mesh_max_color = FF0000  # Red (high points)
+
+# Manual leveling
+show_screw_positions = true
+screw_adjust_steps = 4  # Number of screws
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Filament Screen Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+[filament_screen]
+# Filament change settings
+load_length = 100  # mm to load
+unload_length = 120  # mm to unload
+purge_length = 50  # mm to purge after load
+
+# Speeds
+load_speed = 10  # mm/s
+unload_speed = 10  # mm/s
+purge_speed = 3  # mm/s
+
+# Temperature requirements
+min_temp_for_load = 180
+min_temp_for_unload = 180
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Settings Screen Configuration
+# ═══════════════════════════════════════════════════════════════════════════
+
+[settings_screen]
+# Display options
+show_advanced_settings = true
+show_network_settings = true
+show_system_info = true
+
+# Units
+temperature_unit = celsius
+distance_unit = mm
+speed_unit = mm_s
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Network Configuration (if supported)
+# ═══════════════════════════════════════════════════════════════════════════
+
+[network]
+# Show network status on display
+show_ip_address = true
+show_hostname = true
+show_wifi_signal = true
+
+# Connection monitoring
+check_interval = 30  # seconds
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Advanced Settings
+# ═══════════════════════════════════════════════════════════════════════════
+
+[advanced]
+# Display brightness (0-100)
+brightness = 80
+
+# Screen timeout (seconds, 0 = never)
+screen_timeout = 300
+
+# Beep settings
+beep_on_button_press = true
+beep_on_print_complete = true
+beep_duration = 100  # milliseconds
+
+# Language
+language = en_US
+
+# Date/Time format
+date_format = %Y-%m-%d
+time_format = %H:%M:%S
+use_24h_time = true
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Print Statistics
+# ═══════════════════════════════════════════════════════════════════════════
+
+[statistics]
+# Track print statistics
+enable_statistics = true
+show_total_prints = true
+show_total_time = true
+show_total_filament = true
+show_success_rate = true
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Custom Commands (Optional)
+# ═══════════════════════════════════════════════════════════════════════════
+
+[custom_commands]
+# Add custom G-code commands to display menu
+# Format: name = gcode_command
+
+# Example commands:
+# preheat_pla = M104 S215; M140 S60
+# preheat_petg = M104 S235; M140 S80
+# cool_down = M104 S0; M140 S0
+# disable_steppers = M84
+# pid_tune_hotend = PID_CALIBRATE HEATER=
