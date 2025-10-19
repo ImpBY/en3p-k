@@ -1,0 +1,8 @@
+.gitignore
+.moonraker.conf.bkp
+fluidd.cfg
+printer-*.cfg
+*.bak
+printer.cfg
+
+variables.cfg
