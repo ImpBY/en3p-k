@@ -70,7 +70,7 @@ gcode:
   {action_respond_info("═══════════════════════════════════════════")}
 
   # Check if ADXL345 is connected
-  {% if 'adxl345' not in printer %}
+  {% if 'mcu adxl345' not in printer %}
     {action_respond_info("ERROR: ADXL345 accelerometer not found!")}
     {action_respond_info("Check USB connection and restart Klipper")}
     {action_raise_error("ADXL345 not connected")}
@@ -127,7 +127,7 @@ gcode:
   {action_respond_info("═══════════════════════════════════════════")}
 
   # Check if ADXL345 is connected
-  {% if 'adxl345' not in printer %}
+  {% if 'mcu adxl345' not in printer %}
     {action_respond_info("ERROR: ADXL345 accelerometer not found!")}
     {action_respond_info("Check USB connection and restart Klipper")}
     {action_raise_error("ADXL345 not connected")}
@@ -175,42 +175,3 @@ gcode:
   {action_respond_info("Run SAVE_CONFIG to apply settings")}
   {action_respond_info("═══════════════════════════════════════════")}
 
-
-[gcode_macro SHAPER_CALIBRATE_ALL]
-description: "Calibrate input shaper for both X and Y axes"
-gcode:
-  {action_respond_info("╔═══════════════════════════════════════════╗")}
-  {action_respond_info("║  COMPLETE INPUT SHAPER CALIBRATION       ║")}
-  {action_respond_info("╚═══════════════════════════════════════════╝")}
-  {action_respond_info("")}
-  {action_respond_info("This will calibrate both X and Y axes")}
-  {action_respond_info("Total time: approximately 3-4 minutes")}
-  {action_respond_info("")}
-
-  # Check if ADXL345 is connected
-  {% if 'adxl345' not in printer %}
-    {action_respond_info("ERROR: ADXL345 accelerometer not found!")}
-    {action_raise_error("ADXL345 not connected")}
-  {% endif %}
-
-  # Check temperatures
-  {% set extruder_temp = printer.extruder.temperature %}
-  {% set bed_temp = printer.heater_bed.temperature %}
-
-  {action_respond_info("Current temperatures:")}
-  {action_respond_info("  Extruder: %.1f°C" % extruder_temp)}
-  {action_respond_info("  Bed: %.1f°C" % bed_temp)}
-  {action_respond_info("")}
-
-  # Run X calibration first
-  {action_respond_info("Starting X axis calibration...")}
-  SHAPER_CALIBRATE_X
-
-  # Run Y calibration
-  {action_respond_info("Starting Y axis calibration...")}
-  SHAPER_CALIBRATE_Y
-
-  {action_respond_info("╔═══════════════════════════════════════════╗")}
-  {action_respond_info("║  ALL CALIBRATIONS COMPLETE               ║")}
-  {action_respond_info("╚═══════════════════════════════════════════╝")}
-  {action_respond_info("Run SAVE_CONFIG to apply all settings")}
