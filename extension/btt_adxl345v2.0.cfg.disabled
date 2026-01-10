@@ -1,6 +1,6 @@
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # BIGTREETECH ADXL345 V2.0 Configuration
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 
 # Firmware compilation settings:
 # [*] Enable extra low-level configuration options  
@@ -10,9 +10,9 @@
 # Flash chip (GENERIC_03H with CLKDIV 4)  ---> 
 # Communication Interface (USBSERIAL)  --->
 # 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Flashing Instructions:
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 
 # Initial flash via DFU:
 # 1. Hold Boot button and connect board via USB-C to enter DFU mode
@@ -29,7 +29,7 @@
 # make flash FLASH_DEVICE=/dev/serial/by-id/usb-Klipper_rp2040_XXXXX-if00
 # (No need to press Boot button for USB updates)
 # 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 [mcu adxl345]
 serial: /dev/serial/by-id/usb-Klipper_rp2040_5044466778367D1C-if00
@@ -58,16 +58,16 @@ accel_chip: adxl345
 # hz_per_sec: 1  # Optional: frequency sweep rate (default 1 Hz/s)
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Input Shaping Calibration Macros
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 [gcode_macro SHAPER_CALIBRATE_X]
 description: "Calibrate input shaper for X axis. Requires heated bed and extruder."
 gcode:
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
   {action_respond_info("  INPUT SHAPER CALIBRATION - X AXIS")}
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
 
   # Check if ADXL345 is connected
   {% if 'mcu adxl345' not in printer %}
@@ -108,23 +108,23 @@ gcode:
   {action_respond_info("Starting X axis calibration...")}
   {action_respond_info("This will take approximately 1-2 minutes")}
   {action_respond_info("The toolhead will vibrate - this is normal")}
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
 
   SHAPER_CALIBRATE AXIS=X
 
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
   {action_respond_info("X axis calibration complete!")}
   {action_respond_info("Check console for recommended shaper settings")}
   {action_respond_info("Run SAVE_CONFIG to apply settings")}
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
 
 
 [gcode_macro SHAPER_CALIBRATE_Y]
 description: "Calibrate input shaper for Y axis. Requires heated bed and extruder."
 gcode:
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
   {action_respond_info("  INPUT SHAPER CALIBRATION - Y AXIS")}
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
 
   # Check if ADXL345 is connected
   {% if 'mcu adxl345' not in printer %}
@@ -165,13 +165,13 @@ gcode:
   {action_respond_info("Starting Y axis calibration...")}
   {action_respond_info("This will take approximately 1-2 minutes")}
   {action_respond_info("The toolhead will vibrate - this is normal")}
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
 
   SHAPER_CALIBRATE AXIS=Y
 
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
   {action_respond_info("Y axis calibration complete!")}
   {action_respond_info("Check console for recommended shaper settings")}
   {action_respond_info("Run SAVE_CONFIG to apply settings")}
-  {action_respond_info("═══════════════════════════════════════════")}
+  {action_respond_info("===========================================")}
 

@@ -1,18 +1,18 @@
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # BTT Eddy-NG Configuration for Elegoo Neptune 3 Pro
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # This configuration uses Eddy-NG as:
 #   - Probe for bed mesh leveling
 #   - Z-axis homing endstop (via TAP)
 #   - Temperature-compensated measurements
 # 
 # Setup guide: https://github.com/bigtreetech/eddy
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Eddy-NG MCU Configuration
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 [mcu eddy]
 serial: /dev/serial/by-id/usb-Klipper_rp2040_5044506128C0751C-if00
@@ -20,9 +20,9 @@ restart_method: command
 # is_non_critical: true  # Uncomment if you want printer to work without Eddy
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Temperature Sensors
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 [temperature_sensor eddy_mcu]
 sensor_type: temperature_mcu
@@ -39,9 +39,9 @@ max_temp: 100
 gcode_id: EDDY_PROBE
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Eddy-NG Probe Configuration
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 [probe_eddy_ng eddy]
 # Sensor hardware
@@ -100,9 +100,9 @@ write_tap_plot: false           # Write tap plot for last tap (debugging)
 write_every_tap_plot: false     # Write plot for every tap (debugging)
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Bed Mesh Configuration (Optimized for Eddy-NG)
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 [bed_mesh]
 # Movement settings
@@ -132,9 +132,9 @@ adaptive_margin: 5              # Margin around print area for adaptive mesh
 scan_overshoot: 8               # Overshoot distance for rapid scanning
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Safe Z Home Configuration
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 [safe_z_home]
 # Home position (center of bed, adjusted for probe offset)
@@ -154,9 +154,9 @@ move_to_previous: False         # Don't return to previous position after homing
 enable_force_move: True
 
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Calibration Macros (Fixed for Eddy-NG)
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 [gcode_macro EDDY_CALIBRATE_CURRENT]
 description: "Calibrate Eddy drive current. Follow on-screen instructions."
@@ -417,9 +417,9 @@ gcode:
 [gcode_macro EDDY_CALIBRATE_ALL]
 description: "Complete Eddy calibration sequence (interactive guide)"
 gcode:
-  {action_respond_info("╔════════════════════════════════════════════╗")}
+  {action_respond_info("╔============================================╗")}
   {action_respond_info("║  EDDY-NG COMPLETE CALIBRATION SEQUENCE    ║")}
-  {action_respond_info("╚════════════════════════════════════════════╝")}
+  {action_respond_info("╚============================================╝")}
   {action_respond_info("")}
   {action_respond_info("This wizard will guide you through all calibration steps:")}
   {action_respond_info("  1. Drive Current Calibration (~5 minutes)")}
@@ -427,7 +427,7 @@ gcode:
   {action_respond_info("  3. Temperature Drift Calibration (~30 minutes)")}
   {action_respond_info("")}
   {action_respond_info("Total time: ~40 minutes")}
-  {action_respond_info("═══════════════════════════════════════════════")}
+  {action_respond_info("===============================================")}
   {action_respond_info("")}
 
   # Check if Eddy is connected
@@ -445,7 +445,7 @@ gcode:
   EDDY_CALIBRATE_CURRENT
 
   {action_respond_info("")}
-  {action_respond_info("═══════════════════════════════════════════════")}
+  {action_respond_info("===============================================")}
   {action_respond_info("NEXT STEPS:")}
   {action_respond_info("  1. Complete the drive current calibration above")}
   {action_respond_info("  2. Run: SAVE_CONFIG")}
@@ -453,7 +453,7 @@ gcode:
   {action_respond_info("  4. Then run: SAVE_CONFIG again")}
   {action_respond_info("  5. After restart, run: EDDY_CALIBRATE_DRIFT")}
   {action_respond_info("  6. Finally run: SAVE_CONFIG one last time")}
-  {action_respond_info("═══════════════════════════════════════════════")}
+  {action_respond_info("===============================================")}
 
 [gcode_macro EDDY_STATUS]
 description: "Display Eddy probe status and calibration info"
