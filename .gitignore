@@ -1,4 +1,5 @@
 .gitignore
+.codex
 .moonraker.conf.bkp
 fluidd.cfg
 printer-*.cfg
