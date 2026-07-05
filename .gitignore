@@ -1,6 +1,7 @@
 .gitignore
 .codex
 .moonraker.conf.bkp
+en3p-k-rules.md
 fluidd.cfg
 printer-*.cfg
 *.bak
