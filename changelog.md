@@ -16,6 +16,30 @@
 - Required on-printer calibration before first use: `EDDY_CALIBRATE_TAP STAGE=guess`, then `refine`, then `verify`, then `SAVE_CONFIG`.
 - The `nvm_offset` saved variable is no longer used and may be removed from `variables.cfg`.
 
+Macro audit fixes (same day, after live testing):
+
+- `extension/leveling_auto.enabled.cfg`:
+  - `BED_LEVELING` now runs the tap workflow: tap-safe extruder temperature (capped at 170C), brush wipe without purge, `EDDY_TAP` (skippable with `TAP=0`), then a full `METHOD=scan` mesh; the pre-mesh filament purge was removed (it left goop on the nozzle right before probing).
+  - `MESH_INFO` rewritten: `printer.bed_mesh` has no `average`/`std_dev`/`mesh_x_count` fields and `mesh_min`/`mesh_max` are XY pairs (this crashed with "tuple object has no element 2"); stats are now computed from `probed_matrix`.
+  - `LOAD_MESH` reported stats evaluated before the profile actually loaded; it now delegates to `MESH_INFO` after loading.
+- `extension/leveling_manual.enabled.cfg`:
+  - `LEVEL_CORNERS` rewritten as a state machine (`LEVEL_CORNERS` -> `LEVEL_CORNERS_NEXT`): `PAUSE` inside a macro cannot stop macro expansion in Klipper, so the old version drove through all corners at once; it also used hardcoded positions with Y=-12.5 outside the reachable range ("Move out of range"). Corner positions are now derived from `screws_tilt_adjust` coordinates plus probe offsets, clamped to axis limits.
+  - Removed `LEVEL_BED_SCREWS_LOOP`: same `PAUSE`-inside-macro flaw made it probe five times back to back with no chance to adjust.
+  - Header comment updated to the real probe offsets and coordinate model.
+- `extension/system_control.enabled.cfg`: removed the nonexistent `M410` from `EMERGENCY_STOP`; fixed mojibake in `SHUTDOWN` messages.
+- `extension/mcode_compat.enabled.cfg`: fixed mojibake in `M109`/`M190` messages.
+- `extension/btt_eddy_duo.enabled.cfg`: drift calibration messages now state 60C to match `TEMPERATURE_PROBE_CALIBRATE TARGET=60`.
+- Note: `PROBE_CALIBRATE` does not exist for `probe_eddy_current`; use `EDDY_CALIBRATE_PROBE` (descend calibration) or `EDDY_CALIBRATE_TAP`.
+
+Expected-behavior alignment (same day):
+
+- `EDDY_TAP` now takes multiple tap samples and averages them (`SAMPLES=3` by default); reports per-sample contact Z, average, and spread, and warns when the spread exceeds 0.025mm. Implemented via `_EDDY_TAP_COLLECT` accumulator (macro templates expand before execution, so results must be gathered by a separate macro after each `PROBE`).
+- Bed screw adjustment now uses tap probing: `LEVEL_BED_SCREWS` and `VERIFY_BED_LEVEL` run `SCREWS_TILT_CALCULATE METHOD=tap`. With `METHOD=tap` Klipper measures at the NOZZLE (probe XY offsets are zeroed), so `[screws_tilt_adjust]` coordinates are nozzle positions near the physical screws. A bare `SCREWS_TILT_CALCULATE` without `METHOD=tap` must not be used with these coordinates.
+- `[screws_tilt_adjust]` coordinates corrected per owner-confirmed hardware: physical screws form a ~170x170mm square centered on the bed - (30,30), (200,30), (200,200), (30,200); the previous sensor-based values implied a wrong 120x120 layout. Tap points are pulled inward where the Eddy sensor would otherwise leave the bed (+15mm in X at the left screws, -5mm in Y at the rear ones): rear_left 45,195; rear_right 200,195; front_right 200,30; front_left 45,30. The inward offset does not bias leveling: at convergence all points read equal, so a flat bed ends up level.
+- `LEVEL_CORNERS` uses the same physical coordinates directly (no offset math).
+- Adaptive mesh minimum point count: no config change needed - mainline `bed_mesh.set_adaptive_mesh` clamps the adapted probe count to at least 3 (or 4) per axis, so an adaptive scan always has >= 9 points; verified against klippy/extras/bed_mesh.py.
+- Z-offset adjustment via tap was already in place: `Z_OFFSET_APPLY_PROBE` maps to `Z_OFFSET_APPLY_PROBE_ORIG METHOD=tap`, which updates `tap_z_offset` (verified against klippy/extras/probe_eddy_current.py `_save_tap_z_offset`).
+
 ## 2026-04-13
 
 - Updated the project to Klipper `v0.13.0-623`.
