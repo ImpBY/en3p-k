@@ -40,6 +40,13 @@ Expected-behavior alignment (same day):
 - Adaptive mesh minimum point count: no config change needed - mainline `bed_mesh.set_adaptive_mesh` clamps the adapted probe count to at least 3 (or 4) per axis, so an adaptive scan always has >= 9 points; verified against klippy/extras/bed_mesh.py.
 - Z-offset adjustment via tap was already in place: `Z_OFFSET_APPLY_PROBE` maps to `Z_OFFSET_APPLY_PROBE_ORIG METHOD=tap`, which updates `tap_z_offset` (verified against klippy/extras/probe_eddy_current.py `_save_tap_z_offset`).
 
+Bed mesh switched from sensor scanning to tap probing (same day):
+
+- `BED_MESH_CALIBRATE` (override) default `METHOD` is now `tap`: every mesh point is measured by nozzle contact instead of a sensor reading. Applies to both the adaptive mesh in `START_PRINT` and the full mesh in `BED_LEVELING` (`METHOD=tap ADAPTIVE=0`).
+- The override selects the start height per method: `HORIZONTAL_MOVE_Z=5` for tap (tap needs a 3-20mm start; starting at 1mm risks an undetected contact and a crash) and `HORIZONTAL_MOVE_Z=1` for scan/rapid_scan. `[bed_mesh] horizontal_move_z` default changed 1.0 -> 5.0 accordingly.
+- The override refuses `METHOD=tap` with an uncalibrated `tap_threshold`.
+- `[bed_mesh]` bounds changed from 15,26..195,215 to 45,26..195,200: with tap the mesh points are NOZZLE positions and the Eddy sensor (offset -34.20/+24.15) must stay above the bed at every point (x >= 45, y <= 200); x <= 195 keeps the area valid for scan as well. Trade-off: the leftmost ~45mm and rear ~30mm of the bed are outside the mesh; Klipper extends edge values for prints there.
+
 ## 2026-04-13
 
 - Updated the project to Klipper `v0.13.0-623`.
