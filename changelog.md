@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-07
+
+Macro cleanup: removed unused macros, moved rare calibrations into pluggable `.disabled.cfg` modules.
+
+- Removed macros:
+  - `BED_SCREWS_MANUAL` (broken: calls `BED_SCREWS_ADJUST` but no `[bed_screws]` section exists).
+  - `VERIFY_BED_LEVEL` (duplicate of `LEVEL_BED_SCREWS`).
+  - `BED_LEVELING_QUICK`, `LOAD_MESH`, `CLEAR_MESH` (trivial wrappers; the tap workflow builds a mesh every print, Fluidd has UI for profiles).
+  - `PID_Quick` (trivial composition of `PID_Hotend` + `PID_Bed`).
+  - `EMERGENCY_STOP`, `RESTART_KLIPPER`, `MOTORS_OFF`, `HEATERS_OFF`, `FANS_OFF` (all covered by built-in Fluidd controls; the real e-stop is the Fluidd M112 button). `ALL_OFF` now calls `_SYSTEMS_OFF` directly.
+- New pluggable modules (rename to `.enabled.cfg` to use):
+  - `extension/eddy_calibration.disabled.cfg`: one-time Eddy setup macros moved out of `btt_eddy_duo.enabled.cfg` (`EDDY_CALIBRATE_CURRENT`, `EDDY_CALIBRATE_PROBE`, `EDDY_CALIBRATE_DRIFT`/`_NEXT`/`_STOP`, `EDDY_CALIBRATE_ALL`). `EDDY_CALIBRATE_TAP` stays enabled (needed on every nozzle change).
+  - `extension/leveling_corners.disabled.cfg`: paper-test corner leveling (`LEVEL_CORNERS`/`LEVEL_CORNERS_NEXT`) moved out of `leveling_manual.enabled.cfg` as an Eddy-less fallback.
+  - `extension/pid.enabled.cfg` renamed to `pid.disabled.cfg` (PID calibration is only needed after hardware changes).
+- Deleted `extension/btt_eddy_duo_ng.disabled.cfg` (obsolete Kalico/eddy-ng draft, superseded by native tap).
+- Slicer-facing macros verified against the OrcaSlicer profiles and kept: `START_PRINT`, `END_PRINT`, `FAN_LAYER_CHECK`, `M600`.
+- Manual follow-up in Fluidd (Settings -> Macros): hide the override/compat macros (`PAUSE`, `RESUME`, `CANCEL_PRINT`, `BED_MESH_CALIBRATE`, `Z_OFFSET_APPLY_PROBE`, `M17`, `M109`, `M190`, `M420`, `M600`, `FAN_LAYER_CHECK`) — Fluidd only auto-hides `_`-prefixed names.
+
 ## 2026-07-05
 
 - Switched the Eddy Z-reference workflow from scan-based probing to native Klipper "tap" probing (nozzle contact, requires Klipper >= v0.13.0-700).
