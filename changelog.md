@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-10
+
+- New `extension/klipper_lcd.enabled.cfg`: integration macros for the KlipperLCD service (`_`-prefixed so Fluidd hides them).
+  - `_LCD_BED_LEVELING`: `BED_LEVELING SAVE=0` + `RESPOND MSG="LCD:LEVELING_DONE"` completion marker (the LCD shows the mesh grid on it).
+  - `_LCD_LEVELING_SAVE`: resets LCD-controlled toggles to defaults (fan off, filament sensor enabled, light off) and runs `SAVE_CONFIG`.
+
 ## 2026-07-07
 
 Macro cleanup: removed unused macros, moved rare calibrations into pluggable `.disabled.cfg` modules.
