@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-06
+
+Decided part of the OrcaSlicer cross-check proposals (2026-07-05); the bed preset proposal was dropped, `display_connector.cfg` no longer exists and KlipperLCD already keeps ABS at 100C.
+
+- `extension/fan_control.enabled.cfg`: `FAN_LAYER_CHECK` takes `TARGET` (default `3`) instead of a hardcoded layer number, and the example call in the header comment closes its brace. The slicer profiles pass no `TARGET`, so behavior is unchanged.
+- `extension/nozzle.enabled.cfg`: default `EXTRUDER_TEMP` of `CLEAN_NOZZLE` and `CLEAN_NOZZLE_BRUSH` raised from 170 to 175, so a default purge clears `min_extrude_temp` (170) with a margin for sensor noise. The tap phase is unaffected: it passes its own capped temperature with `PURGE=0`.
+- `core/mcu.cfg`: note on `nozzle_diameter` that the value is static and does not track nozzle swaps.
+
 ## 2026-07-10
 
 - New `extension/klipper_lcd.enabled.cfg`: integration macros for the KlipperLCD service (`_`-prefixed so Fluidd hides them).
