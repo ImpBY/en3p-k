@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-15
+
+Checked against Klipper `v0.13.0-762` (host updated on the dev channel): no incompatibilities in the active configuration. The only API change touching this config is `TEMPERATURE_PROBE_CALIBRATE METHOD=tap` -> `MANUAL_METHOD=tap`, which the repository did not use.
+
+- `extension/eddy_calibration.disabled.cfg`: `EDDY_CALIBRATE_PROBE` and `EDDY_CALIBRATE_DRIFT` take the Z reference from a nozzle tap (`MANUAL_METHOD=tap`, Klipper >= v0.13.0-762) instead of the TESTZ/ACCEPT paper test; `METHOD=manual` restores the paper test, and both fall back to it automatically while `tap_threshold` is not calibrated (fresh sensor). `EDDY_CALIBRATE_DRIFT` takes `TARGET` and `STEP` (defaults 60/2) and records the method for `EDDY_CALIBRATE_DRIFT_NEXT`, which must request the same one. Drift samples are now taken automatically at every temperature step. `EDDY_CALIBRATE_ALL` guide reordered: tap threshold before drift.
+- `extension/btt_eddy_duo.enabled.cfg`: `[temperature_probe eddy] resting_z: 5.0` (default 0.4) so every drift sample starts its tap 3-20mm above the bed, as Klipper requires for contact detection.
+
 ## 2026-08-06
 
 Decided part of the OrcaSlicer cross-check proposals (2026-07-05); the bed preset proposal was dropped, `display_connector.cfg` no longer exists and KlipperLCD already keeps ABS at 100C.
