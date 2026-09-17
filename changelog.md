@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-17
+
+Config side of the unattended Eddy calibration chain (`3Dprinter-tools/eddy-calibrate/eddy_calibrate.py`).
+
+- `extension/btt_eddy_duo.enabled.cfg`: `[temperature_probe eddy]` gets `calibration_position: 115, 115, 5`, `calibration_extruder_temp: 170`, `extruder_heating_z: 50` and `calibration_bed_temp: 100`, so Klipper itself positions the toolhead, holds the nozzle at the tap-safe temperature and heats the bed during drift calibration (bed max_temp is 110).
+- `extension/eddy_calibration.disabled.cfg`: `EDDY_CALIBRATE_CURRENT` puts the sensor (not the nozzle) over the bed center about 20mm up, as the Klipper docs require, and runs `LDC_CALIBRATE_DRIVE_CURRENT` itself when Z is homed; it used to ask for ~1mm. `EDDY_CALIBRATE_DRIFT` wipes the nozzle and leaves positioning and heating to the new `[temperature_probe eddy]` options.
+
 ## 2026-09-15
 
 Checked against Klipper `v0.13.0-762` (host updated on the dev channel): no incompatibilities in the active configuration. The only API change touching this config is `TEMPERATURE_PROBE_CALIBRATE METHOD=tap` -> `MANUAL_METHOD=tap`, which the repository did not use.
