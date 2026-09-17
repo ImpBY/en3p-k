@@ -1,9 +1,16 @@
 # ===========================================================================
-# Include External Configuration Files
+# printer.cfg - generated from this template, not edited by hand
 # ===========================================================================
+# Lives in ~/printer_data/config, outside the git checkout; SAVE_CONFIG
+# appends its block below. The repository is checked out in
+# ~/printer_data/config/en3p-k and delivered by Moonraker's update_manager,
+# which keeps that directory read-only in the UI.
+#
+# Modules: en3p-k/core/*.cfg are always on, en3p-k/extension/*.cfg are on
+# by default. Optional modules are used by copying the file from
+# en3p-k/optional/ into include/; local additions go there as well. Every
+# *.cfg in include/ is loaded, nothing else has to change.
 
-# Include configuration files from the core directory
-[include core/*.cfg]
-
-# Include configuration files from the extension directory
-[include extension/*.enabled.cfg]
+[include en3p-k/core/*.cfg]
+[include en3p-k/extension/*.cfg]
+[include include/*.cfg]

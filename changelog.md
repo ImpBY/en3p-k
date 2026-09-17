@@ -2,6 +2,14 @@
 
 ## 2026-09-17
 
+Layout on the host: the checkout moves from `~/printer_data/config` to `~/printer_data/config/en3p-k`. Moonraker's update_manager keeps its repository path read-only in the UI, so nesting it leaves the rest of the config root editable while the repository files stay delivered by Update and never get dirty.
+
+Module model replaces the `.enabled.cfg`/`.disabled.cfg` suffixes: `core/*.cfg` always on, `extension/*.cfg` on by default, `optional/*.cfg` used by copying the file into `~/printer_data/config/include/`, from which every `*.cfg` is loaded; local additions go there too and `printer.cfg` is never edited by hand. Renamed: `extension/*.enabled.cfg` -> `extension/*.cfg`; `extension/{btt_adxl345v2.0,eddy_calibration,leveling_corners,pid}.disabled.cfg` -> `optional/*.cfg`.
+
+- `printer.cfg.tmpl`: includes `en3p-k/core/*.cfg`, `en3p-k/extension/*.cfg` and `include/*.cfg`.
+- New `moonraker.conf.tmpl`: the local `~/printer_data/config/moonraker.conf` is just `[include en3p-k/moonraker.conf]`.
+- `moonraker.conf`: `[update_manager en3p-k-config] path: ~/printer_data/config/en3p-k`.
+
 Config side of the unattended Eddy calibration chain (`3Dprinter-tools/eddy-calibrate/eddy_calibrate.py`).
 
 - `extension/btt_eddy_duo.enabled.cfg`: `[temperature_probe eddy]` gets `calibration_position: 115, 115, 5`, `calibration_extruder_temp: 170`, `extruder_heating_z: 50` and `calibration_bed_temp: 100`, so Klipper itself positions the toolhead, holds the nozzle at the tap-safe temperature and heats the bed during drift calibration (bed max_temp is 110).
